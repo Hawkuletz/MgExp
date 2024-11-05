@@ -26,6 +26,7 @@ class XMyFileInfo
 	[string]$ErrInfo
 }
 
+# for nicer status, gen_friendly_size
 . ./helperfunc.ps1
 
 function upload_data{
@@ -38,7 +39,7 @@ function upload_data{
 	# MS strongly suggests the chunk size to be a multiple of 320KB (327680 bytes) - see https://learn.microsoft.com/en-us/graph/api/driveitem-createuploadsession?view=graph-rest-1.0
 	# however, there seems to be a rate limitation on API calls, so higher slice sizes give better speeds (up to a point).
 	# let's start with 10 times that. *Do not change msslice*
-	$slice_per_call=10
+	$slices_per_call=10
 	$msslice=327680
 	# don't retry (want to check headers in case of error)
 	$maxtries=1
@@ -89,7 +90,7 @@ function upload_data{
 	$tl=$stream.Length
 	$remain=$stream.Length
 
-	$csize=$slice_per_call*$msslice
+	$csize=$slices_per_call*$msslice
 
 	$buf=New-Object byte[] $csize
 
@@ -307,6 +308,9 @@ function dig_dir
 # Should probably keep the status in a separate file, update it with each uploaded file, but this is good enough for now
 $global:FailList=New-Object System.Collections.Generic.List[System.Object]
 $global:FileCount=0
+
+# Start the recursive process
 dig_dir -did $DriveId -fid $FolderId -Path $Path
 
+# Final message
 if($FailList.count -ne 0) { Write-Host "Failed uploads: $($FailList.count)" } else { Write-Host "Success! $FileCount files uploaded." }
