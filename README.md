@@ -7,4 +7,4 @@ Usage (must have both recursive_upload.ps1 and helperfunc.ps1 in the same direct
 
   ./recursive\_upload.psq -Path <localpath> -DriveId <drive_id> -FolderId <drive_folder_id>
 
-Ranty story about how this came to be at https://hawk.ro/stories/mgdrive/
+Ranty story about how this came to be: https://hawk.ro/stories/mgdrive/
